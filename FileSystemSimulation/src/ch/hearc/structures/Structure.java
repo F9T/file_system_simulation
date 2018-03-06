@@ -14,8 +14,6 @@ import ch.hearc.interfaces.IObjectPaint;
 
 public class Structure implements IObjectPaint {
 
-	private final int DEFAULT_HEIGHT = 40;
-	
 	private ArrayList<StructureSector> structureSectors;
 	private int initX, initY, width;
 	
@@ -35,11 +33,10 @@ public class Structure implements IObjectPaint {
 	public void createStructureSector(String[] _structureSectors) {
 		int x = initX, y = initY;
 		for(String name : _structureSectors) {
-			//Calculate string width and height
-			Rectangle2D rect = Settings.DEFAULT_FONT.getStringBounds(name, new FontRenderContext(new AffineTransform(), false, true));
+			//Calculate string width
+			Rectangle2D rect = Settings.FONT_DEFAULT.getStringBounds(name, new FontRenderContext(new AffineTransform(), false, true));
 			int strWidth = (int) rect.getWidth();
-			int strHeight = (int) rect.getHeight();
-			Coord coord = new Coord(x, y, strWidth, DEFAULT_HEIGHT);
+			Coord coord = new Coord(x, y, strWidth, Settings.STRUCTURE_DEFAULT_HEIGHT);
 			this.structureSectors.add(new StructureSector(name, coord));
 			x += strWidth;
 			width += strWidth;
@@ -62,7 +59,7 @@ public class Structure implements IObjectPaint {
 	}
 	
 	public void paint(Graphics _g) {
-		_g.drawRect(initX, initY, width, DEFAULT_HEIGHT);
+		_g.drawRect(initX, initY, width, Settings.STRUCTURE_DEFAULT_HEIGHT);
 		for(StructureSector sector : structureSectors) {
 			sector.paint(_g);
 		}
