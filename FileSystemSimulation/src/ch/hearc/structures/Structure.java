@@ -17,7 +17,7 @@ public class Structure implements IObjectPaint {
 	private final int DEFAULT_HEIGHT = 40;
 	
 	private ArrayList<StructureSector> structureSectors;
-	private int initX, initY;
+	private int initX, initY, width;
 	
 	public Structure(int _numberSector, String[] _structureSectors) {
 		// Default initX and initY = 5
@@ -27,6 +27,7 @@ public class Structure implements IObjectPaint {
 	public Structure(int _numberSector, String[] _structureSectors, int _initX, int _initY) {
 		this.initX = _initX;
 		this.initY = _initY;
+		this.width = 0;
 		this.structureSectors = new ArrayList<StructureSector>(_numberSector);
 		this.createStructureSector(_structureSectors);
 	}
@@ -41,6 +42,7 @@ public class Structure implements IObjectPaint {
 			Coord coord = new Coord(x, y, strWidth, DEFAULT_HEIGHT);
 			this.structureSectors.add(new StructureSector(name, coord));
 			x += strWidth;
+			width += strWidth;
 		}
 	}
 	
@@ -60,7 +62,7 @@ public class Structure implements IObjectPaint {
 	}
 	
 	public void paint(Graphics _g) {
-		_g.drawRect(initX, initY, 500, 40);
+		_g.drawRect(initX, initY, width, DEFAULT_HEIGHT);
 		for(StructureSector sector : structureSectors) {
 			sector.paint(_g);
 		}
