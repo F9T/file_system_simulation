@@ -15,8 +15,7 @@ public class FileSystem {
 	private final String SECTORS_PROPERTIES = "sectors";
 
 	private Structure structure;
-	private String propertiesPath;
-	private String name;
+	private String propertiesPath, name;
 	
 	public FileSystem(String _propertiesPath) {
 		this.propertiesPath = _propertiesPath;
@@ -47,6 +46,10 @@ public class FileSystem {
 	
 	public Structure getStructure() {
 		return structure;
+	}
+	
+	public String getPath() {
+		return propertiesPath;
 	}
 	
 	public String getName() {

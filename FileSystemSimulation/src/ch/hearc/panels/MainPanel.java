@@ -27,11 +27,24 @@ public class MainPanel extends DefaultPanel {
 		
 		this.setLayout(new GridLayout());
 		this.add(splitPanelFirst);
-		repaint();
+	}
+	
+	public void createFileSystem(String _pathFileSystem) {
+		this.structurePanel.createFileSystem(_pathFileSystem);
+		int middlePaneWidth = structurePanel.getStructureWidth() + splitPanelFirst.getDividerSize() + splitPanelSecond.getDividerSize();
+		this.structurePanel.setSize(new Dimension(middlePaneWidth, this.getPreferredSize().height));
+		this.structurePanel.setPreferredSize(new Dimension(middlePaneWidth, this.getPreferredSize().height));
+		this.structurePanel.setMinimumSize(new Dimension(middlePaneWidth, 0));
+		this.splitPanelSecond.setDividerLocation(structurePanel.getStructureWidth()+splitPanelSecond.getDividerSize());
 	}
 	
 	@Override
 	protected void paintComponent(Graphics _g) {
 		super.paintComponent(_g);
+	}
+	
+	@Override
+	public void dispose() {
+		structurePanel.dispose();
 	}
 }

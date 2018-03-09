@@ -13,7 +13,7 @@ import ch.hearc.interfaces.IObjectPaint;
 public class Structure implements IObjectPaint {
 
 	private ArrayList<StructureSector> structureSectors;
-	private int initX, initY, width;
+	private int initX, initY, width, height;
 	
 	public Structure(int _numberSector, String[] _structureSectors) {
 		// Default initX and initY = 5
@@ -24,6 +24,7 @@ public class Structure implements IObjectPaint {
 		this.initX = _initX;
 		this.initY = _initY;
 		this.width = 0;
+		this.height = Settings.STRUCTURE_DEFAULT_HEIGHT;
 		this.structureSectors = new ArrayList<StructureSector>(_numberSector);
 		this.createStructureSector(_structureSectors);
 	}
@@ -34,7 +35,7 @@ public class Structure implements IObjectPaint {
 			//Calculate string width
 			Rectangle2D rect = Settings.FONT_DEFAULT.getStringBounds(name, new FontRenderContext(new AffineTransform(), false, true));
 			int strWidth = (int) rect.getWidth();
-			Coord coord = new Coord(x, y, strWidth, Settings.STRUCTURE_DEFAULT_HEIGHT);
+			Coord coord = new Coord(x, y, strWidth, height);
 			this.structureSectors.add(new StructureSector(name, coord));
 			x += strWidth;
 			width += strWidth;
@@ -65,7 +66,7 @@ public class Structure implements IObjectPaint {
 	}
 	
 	public void paint(Graphics _g) {
-		_g.drawRect(initX, initY, width, Settings.STRUCTURE_DEFAULT_HEIGHT);
+		_g.drawRect(initX, initY, width, height);
 		for(StructureSector sector : structureSectors) {
 			sector.paint(_g);
 		}
@@ -73,5 +74,9 @@ public class Structure implements IObjectPaint {
 	
 	public void paint(Graphics _g, int _x, int _y) {
 		return;
+	}
+	
+	public boolean intersects(int _x, int _y) {
+		return _x > this.initX && _x < this.initX + width && _y > this.initY && _y < this.initY + height;
 	}
 }
