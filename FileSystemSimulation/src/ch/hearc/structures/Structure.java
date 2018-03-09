@@ -60,6 +60,10 @@ public class Structure implements IObjectPaint {
 		return initX + width;
 	}
 	
+	public ArrayList<StructureSector> getSectors() {
+		return structureSectors;
+	}
+	
 	public void paint(Graphics _g) {
 		_g.drawRect(initX, initY, width, Settings.STRUCTURE_DEFAULT_HEIGHT);
 		for(StructureSector sector : structureSectors) {
