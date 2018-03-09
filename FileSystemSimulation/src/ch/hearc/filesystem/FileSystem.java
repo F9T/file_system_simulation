@@ -48,4 +48,8 @@ public class FileSystem {
 	public Structure getStructure() {
 		return structure;
 	}
+	
+	public String getName() {
+		return name;
+	}
 }

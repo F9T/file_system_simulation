@@ -56,6 +56,10 @@ public class Structure implements IObjectPaint {
 		this.structureSectors.remove(_structureSector);
 	}
 	
+	public int getWidth() {
+		return initX + width;
+	}
+	
 	public void paint(Graphics _g) {
 		_g.drawRect(initX, initY, width, Settings.STRUCTURE_DEFAULT_HEIGHT);
 		for(StructureSector sector : structureSectors) {
