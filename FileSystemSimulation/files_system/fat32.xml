@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FileSystem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="FAT 32">
+  <Structure>
+    <Sectors>
+      <Sector name="Boot Sector" />
+      <Sector name="Reserved Region" />
+      <Sector name="File Allocation Table (FAT)" />
+      <Sector name="Data region" />
+    </Sectors>
+  </Structure>
+</FileSystem>

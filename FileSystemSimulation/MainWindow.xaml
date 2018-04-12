@@ -1,0 +1,39 @@
+﻿<Window x:Class="FileSystemSimulation.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FileSystemSimulation"
+        xmlns:views="clr-namespace:FileSystemSimulation.Views"
+        xmlns:fIleSystem="clr-namespace:FileSystemSimulation.FileSystem"
+        mc:Ignorable="d" Height="600" Width="800"
+        Title="File system" WindowStartupLocation="CenterScreen">
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Vertical" Grid.Row="0" VerticalAlignment="Center">
+            <TextBlock Text="File system : " Height="25"/>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <ComboBox ItemsSource="{Binding FilesSystem}" SelectedItem="{Binding SelectedFileSystem}" Height="25" MinWidth="120">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type fIleSystem:FileSystem}">
+                            <TextBlock Text="{Binding Name}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" Grid.Row="1" VerticalAlignment="Center">
+            <TextBlock Text="Files action : " Height="25"/>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Button Content="Create" Height="25" Width="70" Click="CreateFile_OnClick"/>
+                <Button Margin="5,0,0,0" Content="Modify" Height="25" Width="70" Click="UpdateFile_OnClick"/>
+                <Button Margin="5,0,0,0" Content="Delete" Height="25" Width="70" Click="DeleteFile_OnClick"/>
+            </StackPanel>
+        </StackPanel>
+        <views:ClusterTableView Grid.Row="2" />
+    </Grid>
+</Window>
