@@ -5,21 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:FileSystemSimulation"
         xmlns:views="clr-namespace:FileSystemSimulation.Views"
-        xmlns:fIleSystem="clr-namespace:FileSystemSimulation.FileSystem"
-        mc:Ignorable="d" Height="600" Width="800"
-        Title="File system" WindowStartupLocation="CenterScreen">
+        xmlns:fileSystem="clr-namespace:FileSystemSimulation.FileSystem"
+        mc:Ignorable="d" Height="700" Width="900"
+        Title="ClusterFile system" WindowStartupLocation="CenterScreen">
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
             <RowDefinition Height="60"/>
+            <RowDefinition Height="120"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical" Grid.Row="0" VerticalAlignment="Center">
-            <TextBlock Text="File system : " Height="25"/>
+            <TextBlock Text="ClusterFile system : " Height="25"/>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                 <ComboBox ItemsSource="{Binding FilesSystem}" SelectedItem="{Binding SelectedFileSystem}" Height="25" MinWidth="120">
                     <ComboBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type fIleSystem:FileSystem}">
+                        <DataTemplate DataType="{x:Type fileSystem:FileSystem}">
                             <TextBlock Text="{Binding Name}"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
@@ -27,13 +28,14 @@
             </StackPanel>
         </StackPanel>
         <StackPanel Orientation="Vertical" Grid.Row="1" VerticalAlignment="Center">
-            <TextBlock Text="Files action : " Height="25"/>
+            <TextBlock Text="ClusterFiles action : " Height="25"/>
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                 <Button Content="Create" Height="25" Width="70" Click="CreateFile_OnClick"/>
                 <Button Margin="5,0,0,0" Content="Modify" Height="25" Width="70" Click="UpdateFile_OnClick"/>
                 <Button Margin="5,0,0,0" Content="Delete" Height="25" Width="70" Click="DeleteFile_OnClick"/>
             </StackPanel>
         </StackPanel>
-        <views:ClusterTableView Grid.Row="2" />
+        <views:FileView Grid.Row="2" />
+        <views:ClusterTableView Grid.Row="3" />
     </Grid>
 </Window>

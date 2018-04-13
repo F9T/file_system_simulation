@@ -49,28 +49,34 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="CreateFileWindow.xaml.cs">
-      <DependentUpon>CreateFileWindow.xaml</DependentUpon>
+    <Compile Include="Converters\IsNullBoolConverter.cs" />
+    <Compile Include="CreateUpdateFileWindow.xaml.cs">
+      <DependentUpon>CreateUpdateFileWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Files\AbstractFile.cs" />
+    <Compile Include="Files\AbstractClusterFile.cs" />
     <Compile Include="Clusters\Cluster.cs" />
     <Compile Include="Clusters\ClusterTable.cs" />
-    <Compile Include="Files\EmptyFile.cs" />
+    <Compile Include="Files\EmptyClusterFile.cs" />
     <Compile Include="FileSystem\FileSystemSerializer.cs" />
     <Compile Include="FileSystem\Structure\StructureBloc.cs" />
     <Compile Include="FileSystem\Structure\Structure.cs" />
-    <Compile Include="Files\FragmentFile.cs" />
-    <Compile Include="Views\FileView.xaml.cs">
-      <DependentUpon>FileView.xaml</DependentUpon>
+    <Compile Include="Files\File.cs" />
+    <Compile Include="Files\FragmentClusterFile.cs" />
+    <Compile Include="Settings\Settings.cs" />
+    <Compile Include="Views\DetailFileView.xaml.cs">
+      <DependentUpon>DetailFileView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ClusterTableView.xaml.cs">
       <DependentUpon>ClusterTableView.xaml</DependentUpon>
     </Compile>
-    <Page Include="CreateFileWindow.xaml">
+    <Compile Include="Views\FileVIew.xaml.cs">
+      <DependentUpon>FileVIew.xaml</DependentUpon>
+    </Compile>
+    <Page Include="CreateUpdateFileWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\FileView.xaml">
+    <Page Include="Views\DetailFileView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -89,6 +95,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Views\ClusterTableView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FileVIew.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

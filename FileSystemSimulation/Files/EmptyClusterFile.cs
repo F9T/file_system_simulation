@@ -1,8 +1,8 @@
 ﻿namespace FileSystemSimulation.Files
 {
-    public class EmptyFile : AbstractFile
+    public class EmptyClusterFile : AbstractClusterFile
     {
-        public EmptyFile()
+        public EmptyClusterFile()
         {
             Name = "empty";
         }

@@ -6,42 +6,82 @@
              xmlns:local="clr-namespace:FileSystemSimulation.Views"
              xmlns:files="clr-namespace:FileSystemSimulation.Files"
              xmlns:fileSystemSimulation="clr-namespace:FileSystemSimulation"
+             xmlns:converters="clr-namespace:FileSystemSimulation.Converters"
+             xmlns:clusters="clr-namespace:FileSystemSimulation.Clusters"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <DataTemplate DataType="{x:Type files:FragmentFile}">
-            <TextBlock Text="{Binding Name}" ToolTip="{Binding Name}" TextAlignment="Center" TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis" Padding="0,1,0,0" Background="{Binding Color}"/>
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type files:EmptyFile}">
+        <converters:IsNullBoolConverter x:Key="IsNullBoolConverter"/>
+        
+        <DataTemplate DataType="{x:Type files:FragmentClusterFile}">
+            <StackPanel Orientation="Vertical" Background="{Binding Color}" >
+                <TextBlock Text="{Binding Name}" ToolTip="{Binding Name}" TextAlignment="Center" TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis" Padding="0,1,0,0"/>
+                <TextBlock TextAlignment="Center" TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Text" Value="{Binding NextCluster.Address}"/>
+                            <Setter Property="ToolTip" Value="{Binding NextCluster.Address}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding NextCluster, Converter={StaticResource IsNullBoolConverter}}" Value="True">
+                                    <Setter Property="Text" Value="0xFF"/>
+                                    <Setter Property="ToolTip" Value="0xFF"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StackPanel>
+         </DataTemplate>
+        <DataTemplate DataType="{x:Type files:EmptyClusterFile}">
             <Grid Background="LightGray"/>
         </DataTemplate>
     </UserControl.Resources>
 
     <StackPanel Orientation="Vertical" VerticalAlignment="Top">
         <TextBlock Text="Cluster table : "/>
-        <ListView Margin="0,5,0,0" ItemsSource="{Binding SelectedFileSystem.ClusterTable.Clusters}" SelectionChanged="ClusterSelector_OnSelectionChanged" SelectionMode="Multiple">
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="IsSelected" Value="{Binding IsSelected}" />
-                    <EventSetter Event="PreviewMouseLeftButtonDown" Handler="MouseLeftDown_ListViewOnHandler" />
-                    <EventSetter Event="PreviewMouseLeftButtonUp" Handler="MouseLeftUp_ListViewOnHandler" />
-                </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Vertical" Height="70">
-                        <Border BorderThickness="1" BorderBrush="Black" Width="50" Height="50">
-                            <ContentControl Content="{Binding File}" />
-                        </Border>
-                        <TextBlock Text="{Binding Address}" HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Hidden">
+            <ItemsControl Margin="0,5,0,0" ItemsSource="{Binding SelectedFileSystem.ClusterTable.Clusters}" MouseLeave="ItemsControl_OnMouseLeave">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Vertical" Height="70" Margin="3,0,0,0" MouseEnter="ClusterPanel_OnMouseEnter" MouseLeftButtonDown="ClusterPanel_OnMouseLeftButtonDown" Tag="{Binding .}">
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsMouseEnter}" Value="True">
+                                            <Setter Property="Background" Value="LightBlue" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                            <Setter Property="Background" Value="CornflowerBlue" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <Border BorderThickness="1" Width="50" Height="50">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="BorderBrush" Value="Black" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsMouseEnter}" Value="True">
+                                                <Setter Property="BorderBrush" Value="LightBlue" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                <Setter Property="BorderBrush" Value="CornflowerBlue" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <ContentControl Content="{Binding ClusterFile}" />
+                            </Border>
+                            <TextBlock Text="{Binding Address}" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
     </StackPanel>
 </UserControl>

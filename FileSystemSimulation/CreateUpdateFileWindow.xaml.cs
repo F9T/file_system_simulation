@@ -6,23 +6,22 @@ using FileSystemSimulation.Files;
 namespace FileSystemSimulation
 {
     /// <summary>
-    /// Logique d'interaction pour CreateFileWindow.xaml
+    /// Logique d'interaction pour CreateUpdateFileWindow.xaml
     /// </summary>
-    public partial class CreateFileWindow : INotifyPropertyChanged
+    public partial class CreateUpdateFileWindow : INotifyPropertyChanged
     {
-        private FragmentFile file;
+        private File file;
 
-        public CreateFileWindow()
+        public CreateUpdateFileWindow()
         {
             InitializeComponent();
-            File = new FragmentFile();
-            DataContext = File;
+            DataContext = this;
             IsConfirmed = false;
         }
 
         public bool IsConfirmed { get; set; }
 
-        public FragmentFile File
+        public File File
         {
             get => file;
             set

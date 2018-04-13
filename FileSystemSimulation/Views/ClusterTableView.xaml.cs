@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using FileSystemSimulation.Clusters;
-using FileSystemSimulation.Files;
 
 namespace FileSystemSimulation.Views
 {
@@ -12,54 +10,46 @@ namespace FileSystemSimulation.Views
     /// </summary>
     public partial class ClusterTableView : UserControl
     {
-        private bool isClickEvent;
-
         public ClusterTableView()
         {
             InitializeComponent();
-            isClickEvent = false;
         }
 
-        private void ClusterSelector_OnSelectionChanged(object _sender, SelectionChangedEventArgs _e)
+        private void ClusterPanel_OnMouseEnter(object _sender, MouseEventArgs _e)
         {
-            //Select only if listviewitem is pressed with mouse click
-            if (isClickEvent)
+            if (!(DataContext is MainViewModel mainViewModel)) return;
+            if (!(_sender is StackPanel panel)) return;
+
+            var tag = panel.Tag;
+            if (tag == null) return;
+
+            if (panel.Tag is Cluster cluster)
             {
-                if (_sender is ListView listView) listView.SelectedIndex = -1;
-                isClickEvent = false;
+                mainViewModel.MouseEnterCluster(cluster);
+            }
+        }
+
+        private void ClusterPanel_OnMouseLeftButtonDown(object _sender, MouseButtonEventArgs _e)
+        {
+            if (_e.ClickCount == 1)
+            {
                 if (!(DataContext is MainViewModel mainViewModel)) return;
+                if (!(_sender is StackPanel panel)) return;
 
-                var isSelected = true;
-                Cluster cluster = null;
-                if (_e.AddedItems.Count > 0)
-                {
-                    cluster = _e.AddedItems[0] as Cluster;
-                }
-                else if (_e.RemovedItems.Count > 0)
-                {
-                    cluster = _e.RemovedItems[0] as Cluster;
-                    isSelected = false;
-                }
+                var tag = panel.Tag;
+                if (tag == null) return;
 
-                if (cluster != null)
+                if (panel.Tag is Cluster cluster)
                 {
-                     mainViewModel.GetClusterByFile(cluster);
-                    foreach (var c in mainViewModel.SelectedClusters)
-                    {
-                        c.IsSelected = isSelected;
-                    }
+                    mainViewModel.SelectFileByClusterAddress(cluster.Address);
                 }
             }
         }
 
-        private void MouseLeftDown_ListViewOnHandler(object _sender, MouseButtonEventArgs _e)
+        private void ItemsControl_OnMouseLeave(object _sender, MouseEventArgs _e)
         {
-            isClickEvent = true;
-        }
-
-        private void MouseLeftUp_ListViewOnHandler(object _sender, MouseButtonEventArgs _e)
-        {
-            isClickEvent = false;
+            if (!(DataContext is MainViewModel mainViewModel)) return;
+            mainViewModel.MouseLeaveCluster();
         }
     }
 }

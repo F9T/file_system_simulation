@@ -11,25 +11,23 @@ namespace FileSystemSimulation.Clusters
 {
     public class ClusterTable : INotifyPropertyChanged
     {
-        private int numberCluster, sectorSize, clusterSize;
         private ObservableCollection<Cluster> clusters;
 
-        private List<SolidColorBrush> useColors;
+        private readonly List<SolidColorBrush> useColors;
         private readonly Random random;
 
         public ClusterTable()
         {
             //Initialize
             random = new Random(DateTime.Now.Millisecond);
-            useColors = new List<SolidColorBrush> {new SolidColorBrush(Colors.LightGray)}; //add the color of empty cluster
+            useColors = new List<SolidColorBrush>
+            {
+                //add the color of empty cluster and selected cluster
+                new SolidColorBrush(Colors.LightGray),
+                new SolidColorBrush(Colors.CornflowerBlue),
+                new SolidColorBrush(Colors.LightBlue)
+            }; 
             Clusters = new ObservableCollection<Cluster>();
-
-            //Default size
-            SectorSize = 512;
-            NumberCluster = 50;
-
-            //ClusterSize must be a multiple of SectorSize
-            ClusterSize = 4 * SectorSize;
 
             Initialize();
         }
@@ -37,13 +35,12 @@ namespace FileSystemSimulation.Clusters
         private void Initialize()
         {
             //Create all cluster with empty
-            for (int i = 0, dec = 2; i < NumberCluster; i++, dec++)
+            for (int i = 0, dec = 2; i < Settings.Settings.NumberCluster; i++, dec++)
             {
                 string hexValue = $"0x{dec:X}";
                 Clusters.Add(new Cluster
                 {
-                    Size = ClusterSize,
-                    File = new EmptyFile(),
+                    ClusterFile = new EmptyClusterFile(),
                     Address = hexValue
                 });
             }
@@ -54,7 +51,7 @@ namespace FileSystemSimulation.Clusters
             return Enumerable.Contains(useColors, _color);
         }
 
-        public void CreateFile(string _name, int _totalFileSize)
+        public void AddFileInCluster(File _file)
         {
             //Random choose color if not exists
             SolidColorBrush color;
@@ -63,99 +60,183 @@ namespace FileSystemSimulation.Clusters
                 color = new SolidColorBrush(Color.FromRgb((byte)random.Next(255), (byte)random.Next(255), (byte)random.Next(255)));
             } while (IsColorUsed(color));
             
-            //Number cluster us to store file
-            var nCluster = (int) Math.Ceiling((decimal)_totalFileSize / ClusterSize);
-            var fragmentFileSize = _totalFileSize;
-            if (nCluster > 1)
-            {
-                fragmentFileSize = ClusterSize;
-            }
-            FragmentFile saveLastFile = null;
+            var index = 0;
+            var first = true;
+
+            //Save last cluster for assign next cluster to file
+            FragmentClusterFile saveLastClusterFile = null;
             Cluster saveLastCluster = null;
-            for (var i = 0; i < Clusters.Count; i++)
+            foreach (var cluster in Clusters)
             {
-                var cluster = Clusters.ElementAt(i);
-                if (cluster.File is EmptyFile)
+                if (cluster.ClusterFile is EmptyClusterFile)
                 {
-                    if (saveLastFile != null)
+                    if (first)
                     {
-                        saveLastFile.NextCluster = cluster;
+                        _file.StartCluster = cluster;
+                        first = false;
                     }
-                    cluster.File = new FragmentFile { PreviousCluster = saveLastCluster, Name = _name, Size = fragmentFileSize, Color = color };
-                    saveLastFile = (FragmentFile) cluster.File;
+                    if (saveLastClusterFile != null)
+                    {
+                        saveLastClusterFile.NextCluster = cluster;
+                    }
+                    var currentFragmentFile = _file.FragmentFiles[index];
+                    currentFragmentFile.Color = color;
+                    currentFragmentFile.PreviousCluster = saveLastCluster;
+                    cluster.ClusterFile = currentFragmentFile;
+
+                    saveLastClusterFile = (FragmentClusterFile) cluster.ClusterFile;
                     saveLastCluster = cluster;
-                    nCluster--;
-                    _totalFileSize -= ClusterSize;
-                    if (_totalFileSize < ClusterSize)
-                    {
-                        fragmentFileSize = _totalFileSize;
-                    }
+                    index++;
                 }
-                if (nCluster == 0)
+                //if all files are initialized  
+                if (index == _file.FragmentFiles.Count)
                 {
                     break;
                 }
             }
         }
 
-        public List<Cluster> GetClustersFile(string _address)
+        public void IncreaseClusterFile(int _numberNewCluster, File _file)
         {
-            var list = new List<Cluster>();
+            var color = ((FragmentClusterFile) _file.StartCluster.ClusterFile).Color;
+            var start = (_file.FragmentFiles.Count - _numberNewCluster) - 1;
 
+            //Get old last fragmentfile
+            var oldFragmentFile = _file.FragmentFiles.ElementAt(start);
+            
+            var saveLastClusterFile = oldFragmentFile;
+            var saveLastCluster = GetClusterByFragmentFile(oldFragmentFile);
+            //Add new file to cluster
+            for (var i = start + 1; i < _file.FragmentFiles.Count; i++)
+            {
+                var fragmentFile = _file.FragmentFiles.ElementAt(i);
+                var cluster = GetFirstEmptyCluster();
+                if (cluster != null)
+                {
+                    if (saveLastClusterFile != null)
+                    {
+                        saveLastClusterFile.NextCluster = cluster;
+                    }
+                    fragmentFile.Color = color;
+                    fragmentFile.PreviousCluster = saveLastCluster;
+                    cluster.ClusterFile = fragmentFile;
+
+                    saveLastClusterFile = (FragmentClusterFile) cluster.ClusterFile;
+                    saveLastCluster = cluster;
+                }
+            }
+        }
+
+        private Cluster GetClusterByFragmentFile(FragmentClusterFile _fragmentFile)
+        {
+            return Clusters.FirstOrDefault(_cluster => _cluster.ClusterFile == _fragmentFile);
+        }
+
+        public void DecreaseClusterFile(int _oldSize, File _file)
+        {
+            //New number cluster
+            var nCluster = (int)Math.Ceiling((decimal)_file.Size / Settings.Settings.ClusterSize);
+
+            //Number clear cluster
+            var numberClusterToDelete = _file.NumberClusterUse - nCluster;
+
+            //Get index of cluster to remove
+            var listIndex = (List<int>)GetIndexFragmentClusterFileOfFile(_file);
+
+            //Clear clusters
+            for (var i = 0; i < numberClusterToDelete; i++)
+            {
+                var cluster = Clusters.ElementAt(listIndex.Last());
+                cluster.ClusterFile = new EmptyClusterFile();
+                listIndex.RemoveAt(listIndex.Count - 1);
+            }
+
+            if (listIndex.Count > 0)
+            {
+                //Update cluster
+                var cluster = Clusters.ElementAt(listIndex.Last());
+                if (cluster.ClusterFile is FragmentClusterFile fragmentFile)
+                {
+                    fragmentFile.NextCluster = null;
+                }
+            }
+        }
+
+        private Cluster GetFirstEmptyCluster()
+        {
+            return Clusters.FirstOrDefault(_cluster => _cluster.ClusterFile is EmptyClusterFile);
+        }
+
+        private IEnumerable<int> GetIndexFragmentClusterFileOfFile(File _file)
+        {
+            var listIndex = new List<int> { Clusters.IndexOf(_file.StartCluster) };
+
+            //Add index of all cluster to empty
+            var file = _file.FragmentFiles.First();
+            while (file.NextCluster != null)
+            {
+                listIndex.Add(Clusters.IndexOf(file.NextCluster));
+                file = file.NextCluster.ClusterFile as FragmentClusterFile;
+            }
+            return listIndex;
+        }
+
+        public void DeleteFile(File _file)
+        {
+            //Clear selection
+            SelectionClear();
+
+            //Get index of cluster to remove
+            var listIndex = GetIndexFragmentClusterFileOfFile(_file);
+
+            //Clear cluster
+            foreach (var index in listIndex)
+            {
+                Clusters.ElementAt(index).ClusterFile = new EmptyClusterFile();
+            }
+        }
+
+        public void SelectionClear()
+        {
+            foreach (var cluster in Clusters)
+            {
+                cluster.IsSelected = false;
+            }
+        }
+
+        public void ClearClusterMouseEnter()
+        {
+            foreach (var cluster in Clusters)
+            {
+                cluster.IsMouseEnter = false;
+            }
+        }
+
+        public void SelectClusters(string _address)
+        {
+            SelectionClear();
             foreach (var cluster in Clusters)
             {
                 if (!cluster.Address.Equals(_address)) continue;
-                var file = cluster.File as FragmentFile;
+                var file = cluster.ClusterFile as FragmentClusterFile;
                 if (file != null)
                 {
-                    list.Add(cluster);
+                    cluster.IsSelected = true;
                     //Previous cluster
                     while (file.PreviousCluster != null)
                     {
-                        list.Add(file.PreviousCluster);
-                        file = file.PreviousCluster.File as FragmentFile;
+                        file.PreviousCluster.IsSelected = true;
+                        file = file.PreviousCluster.ClusterFile as FragmentClusterFile;
                     }
                     //Next cluster
-                    file = (FragmentFile) cluster.File;
+                    file = (FragmentClusterFile)cluster.ClusterFile;
                     while (file.NextCluster != null)
                     {
-                        list.Add(file.NextCluster);
-                        file = file.NextCluster.File as FragmentFile;
+                        file.NextCluster.IsSelected = true;
+                        file = file.NextCluster.ClusterFile as FragmentClusterFile;
                     }
                     break;
                 }
-            }
-
-            return list;
-        }
-
-        public int NumberCluster
-        {
-            get => numberCluster;
-            set
-            {
-                numberCluster = value;
-                OnPropertyChanged(nameof(NumberCluster));
-            }
-        }
-
-        public int ClusterSize
-        {
-            get => clusterSize;
-            set
-            {
-                clusterSize = value;
-                OnPropertyChanged(nameof(ClusterSize));
-            }
-        }
-
-        public int SectorSize
-        {
-            get => sectorSize;
-            set
-            {
-                sectorSize = value;
-                OnPropertyChanged(nameof(SectorSize));
             }
         }
 

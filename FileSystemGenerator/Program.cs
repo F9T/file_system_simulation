@@ -25,7 +25,7 @@ namespace FileSystemGenerator
             }
 
 
-            Console.Write(@"Enter name file system : ");
+            Console.Write(@"Enter name clusterFile system : ");
             string name = Console.ReadLine();
 
             if (name == null)

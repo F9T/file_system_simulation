@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using FileSystemSimulation.Files;
 
@@ -7,26 +6,26 @@ namespace FileSystemSimulation.Clusters
 {
     public class Cluster : INotifyPropertyChanged
     {
-        private AbstractFile file;
+        private AbstractClusterFile clusterFile;
         private bool isSelected;
+        private bool isMouseEnter;
 
         public Cluster()
         {
             //Default value
             IsSelected = false;
+            IsMouseEnter = false;
         }
-
-        public int Size { get; set; }
 
         public string Address { get; set; }
 
-        public AbstractFile File
+        public AbstractClusterFile ClusterFile
         {
-            get => file;
+            get => clusterFile;
             set
             {
-                file = value;
-                OnPropertyChanged(nameof(File));
+                clusterFile = value;
+                OnPropertyChanged(nameof(ClusterFile));
             }
         }
 
@@ -40,7 +39,18 @@ namespace FileSystemSimulation.Clusters
             }
         }
 
-            public event PropertyChangedEventHandler PropertyChanged;
+        public bool IsMouseEnter
+        {
+            get => isMouseEnter;
+            set
+            {
+                isMouseEnter = value;
+                OnPropertyChanged(nameof(IsMouseEnter));
+            }
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string _propertyName = null)
         {

@@ -3,17 +3,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:FileSystemSimulation"
+             xmlns:local="clr-namespace:FileSystemSimulation.Views"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <StackPanel Orientation="Vertical">
-        <DockPanel LastChildFill="True">
-            <TextBlock Text="Name :" />
-            <TextBox Text="{Binding Name}" Margin="5,0,0,0"/>
-        </DockPanel>
-        <DockPanel Margin="0,10,0,0" LastChildFill="True">
-            <TextBlock Text="Size :" />
-            <TextBox Text="{Binding Size}" HorizontalAlignment="Stretch" Margin="5,0,0,0"/>
-        </DockPanel>
-    </StackPanel>
+    <Grid>
+        <ListView ItemsSource="{Binding SelectedFileSystem.Files}" SelectedItem="{Binding SelectedFileSystem.SelectedFile}" SelectionMode="Single">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Name, StringFormat='{}file name : {0}'}" />
+                        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="5,0,5,0" />
+                        <TextBlock Text="{Binding Size, StringFormat='{}size : {0} octets'}" Margin="5,0,0,0" />
+                        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="5,0,5,0" />
+                        <TextBlock Text="{Binding NumberClusterUse, StringFormat='{}number cluster use : {0}'}" Margin="5,0,0,0" />
+                        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Margin="5,0,5,0" />
+                        <TextBlock Text="{Binding StartCluster.Address, StringFormat='{}first cluster address : {0}'}" Margin="5,0,0,0" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>   
+    </Grid>
 </UserControl>

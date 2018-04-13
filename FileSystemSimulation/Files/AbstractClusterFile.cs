@@ -3,11 +3,11 @@ using System.Runtime.CompilerServices;
 
 namespace FileSystemSimulation.Files
 {
-    public abstract class AbstractFile : INotifyPropertyChanged
+    public abstract class AbstractClusterFile : INotifyPropertyChanged
     {
         private string name;
 
-        protected AbstractFile()
+        protected AbstractClusterFile()
         {
             
         }

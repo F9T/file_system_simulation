@@ -3,16 +3,12 @@ using FileSystemSimulation.Clusters;
 
 namespace FileSystemSimulation.Files
 {
-    public class FragmentFile : AbstractFile
+    public class FragmentClusterFile : AbstractClusterFile
     {
         private SolidColorBrush color;
         private int size;
 
-        public FragmentFile()
-        {
-            Size = 6300;
-            Name = "file";
-        }
+
         public Cluster PreviousCluster { get; set; }
 
         public Cluster NextCluster { get; set; }

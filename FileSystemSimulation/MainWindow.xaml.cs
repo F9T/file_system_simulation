@@ -35,7 +35,7 @@ namespace FileSystemSimulation
 
         private void UpdateFile_OnClick(object _sender, RoutedEventArgs _e)
         {
-
+            MainViewModel.UpdateFile();
         }
 
         private void DeleteFile_OnClick(object _sender, RoutedEventArgs _e)

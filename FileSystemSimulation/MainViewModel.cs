@@ -22,10 +22,8 @@ namespace FileSystemSimulation
 
         private void Initialize()
         {
-            SelectedClusters = new List<Cluster>();
             FilesSystem = new ObservableCollection<FileSystem.FileSystem>();
             ReadFolderFileSystem();
-
         }
 
         private void ReadFolderFileSystem()
@@ -44,41 +42,59 @@ namespace FileSystemSimulation
             }
         }
 
-        public void CreateFile()
+        public void MouseEnterCluster(Cluster _cluster)
+        {
+            if (_cluster.ClusterFile is FragmentClusterFile file)
+            {
+                SelectedFileSystem?.ClearClusterMouseEnter();
+                _cluster.IsMouseEnter = true;
+                while (file.PreviousCluster != null)
+                {
+                    file.PreviousCluster.IsMouseEnter = true;
+                    file = file.PreviousCluster.ClusterFile as FragmentClusterFile;
+                }
+                //Next cluster
+                file = (FragmentClusterFile) _cluster.ClusterFile;
+                while (file.NextCluster != null)
+                {
+                    file.NextCluster.IsMouseEnter = true;
+                    file = file.NextCluster.ClusterFile as FragmentClusterFile;
+                }
+            }
+        }
+
+        public void MouseLeaveCluster()
+        {
+            SelectedFileSystem?.ClearClusterMouseEnter();
+        }
+
+        public void SelectFileByClusterAddress(string _address)
+        {
+            SelectedFileSystem?.SelectFileByClusterAddress(_address);
+        }
+
+        public void DeselectFile()
         {
             if (SelectedFileSystem != null)
             {
-                var createFileWindow = new CreateFileWindow { Owner = Application.Current.MainWindow };
-                createFileWindow.ShowDialog();
-                if (createFileWindow.IsConfirmed)
-                {
-                    var name = createFileWindow.File.Name;
-                    var size = createFileWindow.File.Size;
-                    SelectedFileSystem.ClusterTable.CreateFile(name, size);
-                }
+                SelectedFileSystem.SelectedFile = null;
             }
+        }
+
+        public void CreateFile()
+        {
+            SelectedFileSystem?.CreateFile();
+        }
+
+        public void UpdateFile()
+        {
+            SelectedFileSystem?.UpdateFile();
         }
 
         public void DeleteFile()
         {
-            if (SelectedFileSystem != null && SelectedClusters.Count > 0)
-            {
-                foreach (var cluster in SelectedClusters)
-                {
-                    var index = SelectedFileSystem.ClusterTable.Clusters.IndexOf(cluster);
-                    SelectedFileSystem.ClusterTable.Clusters.ElementAt(index).File = new EmptyFile();
-                }
-                SelectedClusters.Clear();
-            }
+            SelectedFileSystem?.DeleteFile();
         }
-
-        public void GetClusterByFile(Cluster _cluster)
-        {
-            SelectedClusters.Clear();
-            SelectedClusters = SelectedFileSystem.GetClustersFile(_cluster.Address);
-        }
-
-        public List<Cluster> SelectedClusters { get; set; }
 
         public FileSystem.FileSystem SelectedFileSystem
         {
