@@ -7,11 +7,29 @@ namespace FileSystemSimulation.Files
     {
         private SolidColorBrush color;
         private int size;
+        private Cluster nextCluster;
+        private Cluster previousCluster;
 
 
-        public Cluster PreviousCluster { get; set; }
+        public Cluster PreviousCluster
+        {
+            get => previousCluster;
+            set
+            {
+                previousCluster = value;
+                OnPropertyChanged(nameof(PreviousCluster));
+            }
+        }
 
-        public Cluster NextCluster { get; set; }
+        public Cluster NextCluster
+        {
+            get => nextCluster;
+            set
+            {
+                nextCluster = value;
+                OnPropertyChanged(nameof(NextCluster));
+            }
+        }
 
         public int Size
         {

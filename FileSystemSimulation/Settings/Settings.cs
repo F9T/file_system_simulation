@@ -6,6 +6,6 @@
         //ClusterSize must be a multiple of SectorSize
         public static int ClusterSize = 4 * SectorSize;
 
-        public static int NumberCluster = 50;
+        public static int NumberCluster = 80;
     }
 }

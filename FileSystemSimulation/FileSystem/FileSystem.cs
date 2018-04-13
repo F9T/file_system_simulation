@@ -17,11 +17,16 @@ namespace FileSystemSimulation.FileSystem
         private ClusterTable clusterTable;
         private ObservableCollection<File> files;
         private File selectedFile;
+        private long diskCapacity;
+        private long diskSpaceUsed;
 
         public FileSystem()
         {
             ClusterTable = new ClusterTable();
             Files = new ObservableCollection<File>();
+
+            DiskCapacity = Settings.Settings.NumberCluster * Settings.Settings.ClusterSize;
+            DiskSpaceUsed = 0;
         }
 
         private bool IsFileExists(string _name)
@@ -148,6 +153,28 @@ namespace FileSystemSimulation.FileSystem
             {
                 clusterTable = value;
                 OnPropertyChanged(nameof(ClusterTable));
+            }
+        }
+
+        [XmlIgnore]
+        public long DiskCapacity
+        {
+            get => diskCapacity;
+            set
+            {
+                diskCapacity = value;
+                OnPropertyChanged(nameof(DiskCapacity));
+            }
+        }
+
+        [XmlIgnore]
+        public long DiskSpaceUsed
+        {
+            get => diskSpaceUsed;
+            set
+            {
+                diskSpaceUsed = value;
+                OnPropertyChanged(nameof(DiskSpaceUsed));
             }
         }
 
