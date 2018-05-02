@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="FileSystemSimulation2.Views.StructureFileSystemView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FileSystemSimulation2.Views">
+    <StackPanel Orientation="Vertical">
+        <TextBlock Text="Structure : " Style="{StaticResource TitleStyle}"/>
+        <ItemsControl Margin="0,10,0,0" ItemsSource="{Binding Structure.StructureSectors}" Height="25">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderThickness="1" BorderBrush="Black" Padding="5" MouseEnter="SectorStructure_OnMouseEnter" MouseLeave="SectorStructure_OnMouseLeave">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{StaticResource AccentColorBrush}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <TextBlock Margin="0,10,0,0" Text="Information (hovered with the mouse) : " Style="{StaticResource TitleStyle}"/>
+        <TextBlock Margin="0,10,0,0" Text="{Binding SelectedText, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:StructureFileSystemView}}}"/>
+    </StackPanel>
+</UserControl>
