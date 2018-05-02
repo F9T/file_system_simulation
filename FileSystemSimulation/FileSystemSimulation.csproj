@@ -62,15 +62,30 @@
     <Compile Include="FileSystem\Structure\Structure.cs" />
     <Compile Include="Files\File.cs" />
     <Compile Include="Files\FragmentClusterFile.cs" />
+    <Compile Include="RootDirectory\EnumAttributFile.cs" />
+    <Compile Include="RootDirectory\EnumFirstOctetFileName.cs" />
+    <Compile Include="RootDirectory\RootDirectory.cs" />
     <Compile Include="Settings\Settings.cs" />
+    <Compile Include="Structure\AbstractStructure.cs" />
+    <Compile Include="Structure\RootFileDirectoryStructure.cs" />
+    <Compile Include="Structure\StructureSector.cs" />
     <Compile Include="Views\DetailFileView.xaml.cs">
       <DependentUpon>DetailFileView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ClusterTableView.xaml.cs">
       <DependentUpon>ClusterTableView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\FAT32\FileAllocationTableView.xaml.cs">
+      <DependentUpon>FileAllocationTableView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FAT32\RootDirectoryView.xaml.cs">
+      <DependentUpon>RootDirectoryView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\FileVIew.xaml.cs">
       <DependentUpon>FileVIew.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StructureView.xaml.cs">
+      <DependentUpon>StructureView.xaml</DependentUpon>
     </Compile>
     <Page Include="CreateUpdateFileWindow.xaml">
       <SubType>Designer</SubType>
@@ -98,7 +113,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\FAT32\FileAllocationTableView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FAT32\RootDirectoryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\FileVIew.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\StructureView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

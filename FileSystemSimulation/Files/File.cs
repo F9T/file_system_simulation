@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using FileSystemSimulation.Clusters;
+using FileSystemSimulation.RootDirectory;
 
 namespace FileSystemSimulation.Files
 {
@@ -14,6 +15,15 @@ namespace FileSystemSimulation.Files
         private string name;
         private int numberClusterUse;
         private Cluster startCluster;
+        private string shortFileName;
+        private string extension;
+        private EnumAttributFile attribut;
+        private int fileCreatedTime;
+        private TimeSpan createdTime;
+        private DateTime createdDate;
+        private DateTime accessDate;
+        private TimeSpan writeTime;
+        private DateTime writeDate;
 
         public File()
         {
@@ -121,6 +131,96 @@ namespace FileSystemSimulation.Files
             }
             //Update NumberClusterUse
             NumberClusterUse = nCluster;
+        }
+
+        public string ShortFileName
+        {
+            get => shortFileName;
+            set
+            {
+                shortFileName = value;
+                OnPropertyChanged(nameof(ShortFileName));
+            }
+        }
+
+        public string Extension
+        {
+            get => extension;
+            set
+            {
+                extension = value;
+                OnPropertyChanged(nameof(Extension));
+            }
+        }
+
+        public EnumAttributFile Attribut
+        {
+            get => attribut;
+            set
+            {
+                attribut = value;
+                OnPropertyChanged(nameof(Attribut));
+            }
+        }
+
+        public int FileCreatedTime
+        {
+            get => fileCreatedTime;
+            set
+            {
+                fileCreatedTime = value;
+                OnPropertyChanged(nameof(FileCreatedTime));
+            }
+        }
+
+        public TimeSpan CreatedTime
+        {
+            get => createdTime;
+            set
+            {
+                createdTime = value;
+                OnPropertyChanged(nameof(CreatedTime));
+            }
+        }
+
+        public DateTime CreatedDate
+        {
+            get => createdDate;
+            set
+            {
+                createdDate = value;
+                OnPropertyChanged(nameof(CreatedDate));
+            }
+        }
+
+        public DateTime AccessDate
+        {
+            get => accessDate;
+            set
+            {
+                accessDate = value;
+                OnPropertyChanged(nameof(AccessDate));
+            }
+        }
+
+        public TimeSpan WriteTime
+        {
+            get => writeTime;
+            set
+            {
+                writeTime = value;
+                OnPropertyChanged(nameof(WriteTime));
+            }
+        }
+
+        public DateTime WriteDate
+        {
+            get => writeDate;
+            set
+            {
+                writeDate = value;
+                OnPropertyChanged(nameof(WriteDate));
+            }
         }
 
         public int NumberClusterUse

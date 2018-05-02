@@ -7,6 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
+        <TextBlock Text="Root directory : "/>
         <ListView ItemsSource="{Binding SelectedFileSystem.Files}" SelectedItem="{Binding SelectedFileSystem.SelectedFile}" SelectionMode="Single">
             <ListView.ItemTemplate>
                 <DataTemplate>
