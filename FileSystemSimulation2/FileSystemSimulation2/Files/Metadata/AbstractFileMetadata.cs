@@ -7,8 +7,6 @@ namespace FileSystemSimulation2.Files.Metadata
     public abstract class AbstractFileMetadata : INotifyPropertyChanged
     {
         private Cluster firstCluster;
-        private string fileName;
-        private int fileSize;
 
         public Cluster FirstCluster
         {
@@ -17,26 +15,6 @@ namespace FileSystemSimulation2.Files.Metadata
             {
                 firstCluster = value;
                 OnPropertyChanged(nameof(FirstCluster));
-            }
-        }
-
-        public string FileName
-        {
-            get => fileName;
-            set
-            {
-                fileName = value;
-                OnPropertyChanged(nameof(FileName));
-            }
-        }
-
-        public int FileSize
-        {
-            get => fileSize;
-            set
-            {
-                fileSize = value;
-                OnPropertyChanged(nameof(FileSize));
             }
         }
 

@@ -5,7 +5,7 @@ using System.Windows;
 using FileSystemSimulation2.Files;
 using FileSystemSimulation2.Files.Metadata;
 
-namespace FileSystemSimulation2
+namespace FileSystemSimulation2.Windows
 {
     /// <summary>
     /// Logique d'interaction pour FileWindow.xaml

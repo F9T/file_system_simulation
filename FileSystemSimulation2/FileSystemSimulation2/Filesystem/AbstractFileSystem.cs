@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows.Input;
 using FileSystemSimulation2.Clusters;
-using FileSystemSimulation2.Command;
 using FileSystemSimulation2.Files;
 using FileSystemSimulation2.Filesystem.Structure;
 
@@ -17,18 +16,41 @@ namespace FileSystemSimulation2.Filesystem
         private ObservableCollection<File> files;
         private ObservableCollection<Cluster> clusters;
         private int diskCapacity, diskSpaceUsed;
+        protected Random random;
 
         protected AbstractFileSystem()
         {
+            random = new Random(DateTime.Now.Millisecond);
             Files = new ObservableCollection<File>();
             Clusters = new ObservableCollection<Cluster>();
+            Initialize();
         }
 
-        public abstract void NewFile();
+        public abstract bool NewFile();
 
-        protected abstract void Initialize();
+        private void Initialize()
+        {
+            var numCluster = Settings.NumberCluster;
+            if (numCluster < 3)
+            {
+                numCluster = 4;
+            }
+            //Create all cluster with empty
+            for (int i = 0, dec = 2; i < numCluster; i++, dec++)
+            {
+                var hexValue = $"0x{dec:X}";
+                Clusters.Add(new Cluster(hexValue)
+                {
+                    Content = new EmptyContentCluster()
+                });
+            }
+            DiskCapacity = Settings.NumberCluster * Settings.ClusterSize;
+            DiskSpaceUsed = Settings.ClusterSize * 2;
+        }
 
-        public abstract void RemoveSelectedFile();
+        public abstract void RemoveFile(File _file);
+
+        protected abstract void RemoveAllFiles();
 
         public abstract void AutoGenerate();
         public abstract void Defragmentation();

@@ -79,7 +79,7 @@ namespace FileSystemSimulation2.Files
                 {
                     Size = calcSize,
                     Color = color,
-                    Content = Metadata.FileName
+                    Content = ((FatFileMetada)Metadata).FileName
                 });
                 remainingSize -= Settings.ClusterSize;
                 if (remainingSize < Settings.ClusterSize)
@@ -94,7 +94,7 @@ namespace FileSystemSimulation2.Files
         public void DecreaseSizeFile(int _oldSize)
         {
             //New number cluster
-            var nCluster = (int)Math.Ceiling((decimal)Metadata.FileSize / Settings.ClusterSize);
+            var nCluster = (int)Math.Ceiling((decimal)((FatFileMetada)Metadata).FileSize / Settings.ClusterSize);
 
             //Remove fragmentfile
             for (var i = nCluster; i < NumberClusterUse; i++)
@@ -108,7 +108,7 @@ namespace FileSystemSimulation2.Files
             {
                 //Update last fragment size and nextcluster
                 var lastFragmentFile = FragmentFiles.Last();
-                lastFragmentFile.Size = Metadata.FileSize - ((nCluster - 1) * Settings.ClusterSize);
+                lastFragmentFile.Size = ((FatFileMetada)Metadata).FileSize - ((nCluster - 1) * Settings.ClusterSize);
                 lastFragmentFile.NextCluster = null;
             }
             //Update NumberClusterUse

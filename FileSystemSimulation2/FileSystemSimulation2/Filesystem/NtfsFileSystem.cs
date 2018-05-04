@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using FileSystemSimulation2.Clusters;
 using FileSystemSimulation2.Files;
+using FileSystemSimulation2.Filesystem.Structure;
+using FileSystemSimulation2.NTFS;
 
 namespace FileSystemSimulation2.Filesystem
 {
@@ -9,71 +11,82 @@ namespace FileSystemSimulation2.Filesystem
         public NtfsFileSystem()
         { 
             Name = "NTFS";
+            Structure = new NtfsStructureFileSystem();
+            MasterFileTable = new MasterFileTable(this);
+
+            Initialize();
         }
 
-        protected override void Initialize()
+        private void Initialize()
         {
-            throw new System.NotImplementedException();
+
         }
 
-        public override void RemoveSelectedFile()
+        public override void RemoveFile(File _file)
+        {
+
+        }
+
+        protected override void RemoveAllFiles()
         {
             throw new System.NotImplementedException();
         }
 
         public override void AutoGenerate()
         {
-            throw new System.NotImplementedException();
+
         }
 
         public override void Defragmentation()
         {
-            throw new System.NotImplementedException();
+
         }
 
-        public override void NewFile()
+        public override bool NewFile()
         {
-            
+            return false;
         }
 
         public override Cluster GetFirstEmptyCluster()
         {
-            throw new System.NotImplementedException();
+            return null;
         }
 
         public override IEnumerable<int> GetIndexFragmentClusterFileOfFile(File _file)
         {
-            throw new System.NotImplementedException();
+            return null;
         }
 
         public override void MouseEnterCluster(Cluster _cluster)
         {
-            throw new System.NotImplementedException();
+
         }
 
         public override void ClearClusterMouseEnter()
         {
-            throw new System.NotImplementedException();
+
         }
 
         public override void ClearSelection()
         {
-            throw new System.NotImplementedException();
+
         }
 
         public override void SelectClustersByFile(File _file, bool _select)
         {
-            throw new System.NotImplementedException();
+
         }
 
         public override void SelectFileByCluster(Cluster _cluster, bool _select)
         {
-            throw new System.NotImplementedException();
+
         }
 
         public override void SelectClustersByAddress(string _address, bool _select)
         {
-            throw new System.NotImplementedException();
+
         }
+
+        public MasterFileTable MasterFileTable { get; set; }
     }
 }

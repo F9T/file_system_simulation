@@ -16,7 +16,8 @@
         </Grid.ColumnDefinitions>
         <TextBlock Grid.Row="0" Grid.Column="0" Text="Root directory :" Style="{StaticResource TitleStyle}"/>
         <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="Delete" Width="75" Height="25" Command="{Binding DeleteFileCommand}"/>
+            <Button Content="Delete all" Width="75" Height="25" Command="{Binding DeleteAllFileCommand}"/>
+            <Button Margin="10,0,0,0" Content="Delete" Width="75" Height="25" Command="{Binding DeleteFileCommand}"/>
             <Button Margin="10,0,0,0" Content="Modify" Width="75" Height="25" Command="{Binding ModifyFileCommand}"/>
             <Button Margin="10,0,0,0" Content="New" Width="75" Height="25" Command="{Binding NewFileCommand}"/>
         </StackPanel>

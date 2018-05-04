@@ -4,9 +4,24 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:FileSystemSimulation2.Views.NTFS"
+             xmlns:views="clr-namespace:FileSystemSimulation2.Views"
+             xmlns:fat32="clr-namespace:FileSystemSimulation2.Views.FAT32"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-            
-    </Grid>
+    <views:ExpanderGrid>
+        <views:ExpanderGrid.RowDefinitions>
+            <RowDefinition Height="150" MaxHeight="150"/>
+            <RowDefinition Height="200" MaxHeight="200"/>
+            <RowDefinition Height="*"/>
+        </views:ExpanderGrid.RowDefinitions>
+        <Expander Grid.Row="0" Header="Structure" IsExpanded="False" VirtualizingPanel.IsVirtualizingWhenGrouping="True">
+            <views:StructureFileSystemView />
+        </Expander>
+        <Expander Grid.Row="1" Header="Master File Table (MFT)" IsExpanded="True" VirtualizingPanel.IsVirtualizingWhenGrouping="True">
+            <local:MasterFileTableView  />
+        </Expander>
+        <Expander Grid.Row="2" Header="Clusters" IsExpanded="True" VirtualizingPanel.IsVirtualizingWhenGrouping="True">
+            <views:ClusterView />
+        </Expander>
+    </views:ExpanderGrid>
 </UserControl>

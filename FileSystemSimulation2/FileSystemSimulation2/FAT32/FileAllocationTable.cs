@@ -139,7 +139,7 @@ namespace FileSystemSimulation2.FAT32
         public void DecreaseClusterFile(int _oldSize, File _file)
         {
             //New number cluster
-            var nCluster = (int)Math.Ceiling((decimal)_file.Metadata.FileSize / Settings.ClusterSize);
+            var nCluster = (int)Math.Ceiling((decimal)((FatFileMetada)_file.Metadata).FileSize / Settings.ClusterSize);
 
             //Number clear cluster
             var numberClusterToDelete = _file.NumberClusterUse - nCluster;

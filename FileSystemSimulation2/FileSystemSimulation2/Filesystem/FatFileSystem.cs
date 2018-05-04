@@ -9,17 +9,17 @@ using FileSystemSimulation2.FAT32;
 using FileSystemSimulation2.Files;
 using FileSystemSimulation2.Files.Metadata;
 using FileSystemSimulation2.Filesystem.Structure;
+using FileSystemSimulation2.Windows;
 
 namespace FileSystemSimulation2.Filesystem
 {
     public class FatFileSystem : AbstractFileSystem
     {
         private FileAllocationTable fileAllocationTable;
-        private readonly Random random;
+        private const int MaxSizeFile = 5000;
 
         public FatFileSystem()
         {
-            random = new Random(DateTime.Now.Millisecond);
             Name = "FAT";
             Structure = new FatStructureFileSystem();
             FileAllocationTable = new FileAllocationTable(this);
@@ -28,15 +28,15 @@ namespace FileSystemSimulation2.Filesystem
             Initialize();
         }
 
-        public override void RemoveSelectedFile()
+        public override void RemoveFile(File _file)
         {
-            if (SelectedFile == null) return;
+            if (_file == null) return;
 
             //Clear selection
             ClearSelection();
 
             //Get index of cluster to remove
-            var listIndex = GetIndexFragmentClusterFileOfFile(SelectedFile);
+            var listIndex = GetIndexFragmentClusterFileOfFile(_file);
 
             //Clear cluster
             foreach (var index in listIndex)
@@ -44,7 +44,7 @@ namespace FileSystemSimulation2.Filesystem
                 Clusters.ElementAt(index).Content = new EmptyContentCluster();
             }
 
-            Files.Remove(SelectedFile);
+            Files.Remove(_file);
             SelectedFile = null;
 
             var needUpdate = RootDirectory.NeedUpdateRootDirectory();
@@ -54,25 +54,18 @@ namespace FileSystemSimulation2.Filesystem
             }
         }
 
-        protected override void Initialize()
+        protected override void RemoveAllFiles()
         {
-            var numCluster = Settings.NumberCluster;
-            if (numCluster < 3)
-            {
-                numCluster = 4;
-            }
-            //Create all cluster with empty
-            for (int i = 0, dec = 2; i < numCluster; i++, dec++)
-            {
-                var hexValue = $"0x{dec:X}";
-                Clusters.Add(new Cluster(hexValue)
-                {
-                    Content = new EmptyContentCluster()
-                });
-            }
-            DiskCapacity = Settings.NumberCluster * Settings.ClusterSize;
-            DiskSpaceUsed = Settings.ClusterSize * 2;
+            ClearSelection();
 
+            for (int i = 0; i < Files.Count;)
+            {
+                RemoveFile(Files.ElementAt(i));
+            }
+        }
+
+        private void Initialize()
+        {
             // init reserved cluster (1er and 2nd)
             Clusters.ElementAt(0).Content = new ReservedContentCluster();
             Clusters.ElementAt(1).Content = new ReservedContentCluster();
@@ -84,14 +77,55 @@ namespace FileSystemSimulation2.Filesystem
             RootDirectory.CurrentCluster = cluster;
 
             // init commands
-            DeleteFileCommand = new RelayCommand(_param => RemoveSelectedFile(), _param => SelectedFile != null);
+            DeleteAllFileCommand = new RelayCommand(_param => RemoveAllFiles(), _param => true);
+            DeleteFileCommand = new RelayCommand(_param => RemoveFile(SelectedFile), _param => SelectedFile != null);
             ModifyFileCommand = new RelayCommand(_param => ModifySelectedFile(), _param => SelectedFile != null);
             NewFileCommand = new RelayCommand(_param => NewFile(), _param => true);
         }
 
         public override void AutoGenerate()
         {
+            var generateWindow = new GenerateFileWindow
+            {
+                Owner = Application.Current.MainWindow
+            };
+            generateWindow.ShowDialog();
 
+            if (generateWindow.IsConfirmed)
+            {
+                var numberFile = generateWindow.NumberFile;
+
+                for (var i = 0; i < numberFile; i++)
+                {
+                    var file = RandomFile();
+                    var isOk = NewFile(file);
+                    if (!isOk) break;
+                }
+            }
+        }
+
+        private File RandomFile()
+        {
+            var size = random.Next(0, MaxSizeFile);
+
+            var metadata = new FatFileMetada
+            {
+                Attribut = EnumFileAttribut.Archive,
+                CreatedTime = DateTime.Now,
+                CreatedDate = DateTime.Now,
+                Extension = "txt",
+                FileName = "auto",
+                FileSize = size,
+                AccessDate = new DateTime().Date,
+                WriteDate = new DateTime().Date,
+                WriteTime = DateTime.Now,
+            };
+
+            var file = new File
+            {
+                Metadata = metadata,
+            };
+            return file;
         }
 
         public override void Defragmentation()
@@ -233,9 +267,9 @@ namespace FileSystemSimulation2.Filesystem
         {
             if (SelectedFile == null) return;
             
-            var oldSize = SelectedFile.Metadata.FileSize;
+            var oldSize = ((FatFileMetada)SelectedFile.Metadata).FileSize;
 
-            var fileWindow = new FileWindow(SelectedFile)
+            var fileWindow = new Windows.FileWindow(SelectedFile)
             {
                 ConfirmContent = "Modify",
                 Owner = Application.Current.MainWindow
@@ -245,6 +279,9 @@ namespace FileSystemSimulation2.Filesystem
             if (!fileWindow.IsConfirmed) return;
 
             var newFile = fileWindow.File;
+            ((FatFileMetada)newFile.Metadata).WriteDate = new DateTime().Date;
+            ((FatFileMetada)newFile.Metadata).WriteTime = DateTime.Now;
+            ((FatFileMetada)newFile.Metadata).AccessDate = DateTime.Now;
 
             //Clear selection
 
@@ -266,21 +303,11 @@ namespace FileSystemSimulation2.Filesystem
             SelectClustersByFile(newFile, true);
         }
 
-        public override void NewFile()
+        private bool NewFile(File _file)
         {
-            var fileWindow = new FileWindow
-            {
-                ConfirmContent = "Create",
-                Owner = Application.Current.MainWindow
-            };
-            fileWindow.ShowDialog();
-
-            if (!fileWindow.IsConfirmed) return;
-
-
-            var file = fileWindow.File;
-            var name = file.Metadata.FileName;
-            var size = file.Metadata.FileSize;
+            var file = _file;
+            var name = ((FatFileMetada)file.Metadata).FileName;
+            var size = ((FatFileMetada)file.Metadata).FileSize;
             var ext = "txt";
 
             var numberCluster = (int)Math.Ceiling((decimal)size / Settings.ClusterSize);
@@ -289,7 +316,7 @@ namespace FileSystemSimulation2.Filesystem
             if (!enoughCluster)
             {
                 MessageBox.Show("Disk space full");
-                return;
+                return false;
             }
 
             //Update root directory
@@ -300,7 +327,7 @@ namespace FileSystemSimulation2.Filesystem
                     bool spaceDiskOk = AddRootDirectory();
                     if (!spaceDiskOk)
                     {
-                        return;
+                        return false;
                     }
                 }
             }
@@ -331,6 +358,21 @@ namespace FileSystemSimulation2.Filesystem
                 FileAllocationTable.AddFileInCluster(file);
                 Files.Add(file);
             }
+            return true;
+        }
+
+        public override bool NewFile()
+        {
+            var fileWindow = new Windows.FileWindow
+            {
+                ConfirmContent = "Create",
+                Owner = Application.Current.MainWindow
+            };
+            fileWindow.ShowDialog();
+
+            if (!fileWindow.IsConfirmed) return false;
+
+            return NewFile(fileWindow.File);
         }
 
         private void AllocateCluster(File _file, string _name, int _size)
@@ -405,6 +447,7 @@ namespace FileSystemSimulation2.Filesystem
         }
 
         public ICommand DeleteFileCommand { get; set; }
+        public ICommand DeleteAllFileCommand { get; set; }
         public ICommand ModifyFileCommand { get; set; }
         public ICommand NewFileCommand { get; set; }
 

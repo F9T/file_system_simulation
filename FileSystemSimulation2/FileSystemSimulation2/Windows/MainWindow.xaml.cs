@@ -1,6 +1,6 @@
 ﻿using MahApps.Metro.Controls;
 
-namespace FileSystemSimulation2
+namespace FileSystemSimulation2.Windows
 {
     /// <summary>
     /// Logique d'interaction pour MainWindow.xaml

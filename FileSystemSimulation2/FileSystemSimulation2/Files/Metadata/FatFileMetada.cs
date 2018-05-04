@@ -8,6 +8,8 @@ namespace FileSystemSimulation2.Files.Metadata
         private EnumFileAttribut attribut;
         private byte fileCreationTime;
         private DateTime createdDate, accessDate, writeDate, createdTime, writeTime;
+        private string fileName;
+        private int fileSize;
 
         public string Extension
         {
@@ -16,6 +18,26 @@ namespace FileSystemSimulation2.Files.Metadata
             {
                 extension = value;
                 OnPropertyChanged(nameof(Extension));
+            }
+        }
+
+        public string FileName
+        {
+            get => fileName;
+            set
+            {
+                fileName = value;
+                OnPropertyChanged(nameof(FileName));
+            }
+        }
+
+        public int FileSize
+        {
+            get => fileSize;
+            set
+            {
+                fileSize = value;
+                OnPropertyChanged(nameof(FileSize));
             }
         }
 

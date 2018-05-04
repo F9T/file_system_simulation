@@ -7,15 +7,20 @@
              xmlns:views="clr-namespace:FileSystemSimulation2.Views"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
-    <StackPanel>
-        <Expander Header="Structure" VirtualizingPanel.IsVirtualizingWhenGrouping="True">
+    <views:ExpanderGrid>
+        <views:ExpanderGrid.RowDefinitions>
+            <RowDefinition Height="150" MaxHeight="150"/>
+            <RowDefinition Height="200" MaxHeight="200"/>
+            <RowDefinition Height="*"/>
+        </views:ExpanderGrid.RowDefinitions>
+        <Expander Grid.Row="0" Header="Structure" IsExpanded="False" VirtualizingPanel.IsVirtualizingWhenGrouping="True">
             <views:StructureFileSystemView />
         </Expander>
-        <Expander Margin="0,5,0,0" Header="Root Directory" IsExpanded="True" VirtualizingPanel.IsVirtualizingWhenGrouping="True">
+        <Expander Grid.Row="1" Header="Root Directory" IsExpanded="True" VirtualizingPanel.IsVirtualizingWhenGrouping="True">
             <local:RootDirectoryView  />
         </Expander>
-        <Expander Margin="0,5,0,0" Header="Clusters" IsExpanded="True" VirtualizingPanel.IsVirtualizingWhenGrouping="True">
+        <Expander Grid.Row="2" Header="Clusters" IsExpanded="True" VirtualizingPanel.IsVirtualizingWhenGrouping="True">
             <local:FileAllocationTableView />
         </Expander>
-    </StackPanel>
+    </views:ExpanderGrid>
 </UserControl>
