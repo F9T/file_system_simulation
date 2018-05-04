@@ -1,6 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Net.Mime;
+using System.Windows;
+using System.Windows.Input;
 using FileSystemSimulation2.Clusters;
+using FileSystemSimulation2.Command;
+using FileSystemSimulation2.FAT32;
 using FileSystemSimulation2.Files;
+using FileSystemSimulation2.Files.Metadata;
 using FileSystemSimulation2.Filesystem.Structure;
 using FileSystemSimulation2.NTFS;
 
@@ -19,6 +26,7 @@ namespace FileSystemSimulation2.Filesystem
 
         private void Initialize()
         {
+            NewFileCommand = new RelayCommand(_param => NewFile(), _param => true);
 
         }
 
@@ -42,9 +50,55 @@ namespace FileSystemSimulation2.Filesystem
 
         }
 
+        private bool NewFile(File _file)
+        {
+            var file = _file;
+            var name = ((FatFileMetada)file.Metadata).FileName;
+            var size = ((FatFileMetada)file.Metadata).FileSize;
+            var ext = "txt";
+
+
+            //Allocate cluster and create file
+            {
+                var metadata = new NtfsMetadata
+                {
+                    StandardInformation = new StandardInformation
+                    {
+                        CreatedTime = DateTime.Now,
+                        AccessDate = DateTime.Now,
+                        CreatedDate = DateTime.Now,
+                        DateMftRecordModified = DateTime.Now,
+                        DateModified = DateTime.Now
+                    },
+                    EntryFileName = new EntryFileName
+                    {
+                        CreatedTime = DateTime.Now,
+                        AccessDate = DateTime.Now,
+                        CreatedDate = DateTime.Now,
+                        DateMftRecordModified = DateTime.Now,
+                        DateModified = DateTime.Now,
+                        Name = name,
+                        ParentDirectory = "parent"
+                    }
+                };
+                file.Metadata = metadata;
+                Files.Add(file);
+            }
+            return true;
+        }
+
         public override bool NewFile()
         {
-            return false;
+            var fileWindow = new Windows.FileWindow
+            {
+                ConfirmContent = "Create",
+                Owner = Application.Current.MainWindow
+            };
+            fileWindow.ShowDialog();
+
+            if (!fileWindow.IsConfirmed) return false;
+
+            return NewFile(fileWindow.File);
         }
 
         public override Cluster GetFirstEmptyCluster()
@@ -88,5 +142,6 @@ namespace FileSystemSimulation2.Filesystem
         }
 
         public MasterFileTable MasterFileTable { get; set; }
+        public ICommand NewFileCommand { get; set; }
     }
 }

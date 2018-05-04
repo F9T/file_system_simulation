@@ -14,6 +14,11 @@
             <RowDefinition Height="200" MaxHeight="200"/>
             <RowDefinition Height="*"/>
         </views:ExpanderGrid.RowDefinitions>
+        <TextBlock Grid.Row="0" Grid.RowSpan="3" Text="EN COURS DE DEVELOPPEMENT" FontSize="50" Panel.ZIndex="10">
+            <TextBlock.LayoutTransform>
+                <RotateTransform Angle="-45"/>
+            </TextBlock.LayoutTransform>
+        </TextBlock>
         <Expander Grid.Row="0" Header="Structure" IsExpanded="False" VirtualizingPanel.IsVirtualizingWhenGrouping="True">
             <views:StructureFileSystemView />
         </Expander>

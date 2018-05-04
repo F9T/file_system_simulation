@@ -27,14 +27,14 @@
                 <DataGridTemplateColumn Header="Standard information" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Metadata.StadardInformation}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding Metadata.StandardInformation}" HorizontalAlignment="Center"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="File name" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Metadata.FirstCluster.Address}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding Metadata.EntryFileName.Name}" HorizontalAlignment="Center"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
